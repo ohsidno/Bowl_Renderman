@@ -1,0 +1,150 @@
+Hider "raytrace" "int incremental" [1] "int maxsamples" [1024]
+PixelVariance 0.001
+Integrator "PxrUnified" "integrator" 
+
+Format 3840 2160 1
+Display "Bowl.tiff" "file" "rgba"
+Projection "perspective" "fov" [30]
+
+# Camera Settings 
+Translate 0 0.12 3.2
+Rotate -20 1 0 0
+Rotate 22 0 1 0
+
+DepthOfField 100 3.2 2.8
+
+
+WorldBegin
+
+# HDRI Dome Light
+AttributeBegin
+    Rotate 90 1 0 0
+    Rotate 180 0 1 0
+    Rotate 230 0 0 1
+    Light "PxrDomeLight" "theDomeLight"
+        "float exposure" [-2.5]  
+        "color lightColor" [1.0 1.0 1.0]
+        "string lightColorMap" ["D:/Bowl Renderman Submission/Bowl Rman/lythwood_lounge_8k.tx"]
+AttributeEnd
+
+# Point Light 
+AttributeBegin
+    Translate 4 2 -1
+    Light "PxrSphereLight" "backPointLight"
+        "color lightColor" [1 1 1]
+        "float intensity" [40]
+        "float exposure" [0]
+AttributeEnd
+
+# Bowl Group 
+AttributeBegin
+    Translate 0 -0.25 0
+
+    # Outer Bowl
+    AttributeBegin
+        Pattern "OuterBowlShader" "outerShader"
+            "color upper_color" [0.45 0.45 0.45]
+            "color lower_color" [0.22 0.06 0.04]
+            "color dot_color" [0.05 0.05 0.05]
+            "float strap_top" [-0.35]
+            "float dot_start" [-0.35]
+            "float dot_base_radius" [0.0035]
+            "float dot_radius_variation" [0.80]
+            "float dot_density" [400.0]
+
+        Bxdf "PxrDisney" "bowlMaterial"
+            "reference color baseColor" ["outerShader:Cout"]
+            "float metallic" [0.0]
+            "float specular" [0.4]
+            "float roughness" [0.2]
+            "float clearcoat" [0.3]
+
+        Translate 0 0 0
+        Scale 0.6 0.6 0.6
+        Rotate -90 1 0 0
+        Sphere 1 -1 0 360
+    AttributeEnd
+
+    # Base 
+    AttributeBegin
+        Bxdf "PxrDisney" "baseRingMaterial"
+            "color baseColor" [0.22 0.06 0.04]
+            "float metallic" [0.0]
+            "float specular" [0.4]
+            "float roughness" [0.2]
+            "float clearcoat" [0.1]
+
+        Scale 0.6 0.6 0.6
+        Rotate -90 1 0 0
+        Cylinder 0.4 -0.98 -0.92 360
+    AttributeEnd
+
+    # Inner Bowl
+    AttributeBegin
+        Pattern "TwoToneBowlShader" "innerBowlShader"
+            "color upper_color" [0.45 0.45 0.45]
+            "color lower_color" [0.45 0.45 0.45]
+            "color dot_color" [0.05 0.05 0.05]
+            "float split_height" [0.0]
+            "float dot_base_radius" [0.0028]
+            "float dot_radius_variation" [0.65]
+            "float dot_density" [400]
+
+        Bxdf "PxrDisney" "innerBowlMaterial"
+            "reference color baseColor" ["innerBowlShader:Cout"]
+            "float metallic" [0.0]
+            "float specular" [0.3]
+            "float roughness" [0.3]
+            "float clearcoat" [0.1]
+
+        Translate 0 0.006 0
+        Scale 0.585 0.585 0.585
+        Rotate -90 1 0 0
+        Sphere 1 -1 0 360
+    AttributeEnd
+
+    # Rim
+    AttributeBegin
+        Bxdf "PxrDisney" "ceramicRim"
+            "color baseColor" [0.22 0.06 0.04]
+            "float metallic" [0.0]
+            "float specular" [0.4]
+            "float roughness" [0.2]
+            "float clearcoat" [0.1]
+
+        Rotate -90 1 0 0
+        Torus 0.5925 0.0075 0 360 360
+    AttributeEnd
+AttributeEnd
+
+# Table 
+AttributeBegin
+    Pattern "PxrTexture" "tableAlbedo"
+        "string filename" ["D:/Bowl Renderman Submission/Bowl Rman/textures/oak_veneer_01_diff_4k.tx"]
+        "float scaleS" [5]
+        "float scaleT" [5]
+
+    Pattern "PxrNormalMap" "tableNormal"
+        "string filename" ["D:/Bowl Renderman Submission/Bowl Rman/textures/oak_veneer_01_nor_gl_4k.tx"]
+        "float scaleS" [5]
+        "float scaleT" [5]
+        "int isNormalMap" [1]
+
+    Pattern "PxrTexture" "tableRoughness"
+        "string filename" ["D:/Bowl Renderman Submission/Bowl Rman/textures/oak_veneer_01_rough_4k.tx"]
+        "float scaleS" [5]
+        "float scaleT" [5]
+
+    Bxdf "PxrDisney" "tableMaterial"
+        "reference color baseColor" ["tableAlbedo:resultRGB"]
+        "reference normal bumpNormal" ["tableNormal:resultN"]
+        "reference float roughness" ["tableRoughness:resultG"]
+        "float specular" [0.5]
+        "float anisotropic" [0.3]
+
+    Translate 0 -0.85 0
+    Patch "bilinear" "P" [-2 0 -2 2 0 -2 -2 0 2 2 0 2]
+        "st" [0 0 1 0 0 1 1 1]
+AttributeEnd
+
+WorldEnd

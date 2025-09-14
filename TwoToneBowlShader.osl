@@ -1,0 +1,45 @@
+// Shader for a two-tone bowl with dots on the upper and inner part.
+
+shader TwoToneBowlShader(
+    // Input parameters: colors, split height, dot properties
+    color upper_color = color(0.82, 0.81, 0.80),
+    color lower_color = color(0.82, 0.81, 0.80),
+    color dot_color   = color(0.05, 0.05, 0.05),
+    float split_height = 0.0,
+    float dot_base_radius = 0.0035,
+    float dot_radius_variation = 0.25,
+    float dot_density = 400.0,
+    output color Cout = 0
+)
+{
+    // Transform point to object space
+    point pos = transform("object", P);
+    float y = pos[1];
+    float s = mod(pos[0], 1.0);
+    float t = mod(pos[2], 1.0);
+
+    // Set base color based on height
+    color base_color = (y < split_height) ? lower_color : upper_color;
+    color result = base_color;
+
+    if (base_color == upper_color) {
+        int numDots = int(dot_density);
+        for (int i = 0; i < numDots; i++) {
+            // Generate random dot positions and sizes
+            float sDot = mod(sin(i * 12.9898) * 43758.5453, 1.0);
+            float tDot = mod(sin(i * 78.233) * 12345.6789, 1.0);
+            float r = dot_base_radius * (1.0 + dot_radius_variation * mod(sin(i * 91.7), 1.0));
+
+            // Check if point is inside the dot
+            float dx = s - sDot;
+            float dy = t - tDot;
+            float dist = sqrt(dx*dx + dy*dy);
+            if (dist < r) {
+                result = dot_color;
+                break;
+            }
+        }
+    }
+
+    Cout = result;
+}

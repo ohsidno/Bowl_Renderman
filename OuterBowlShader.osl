@@ -1,0 +1,52 @@
+// Shader for the outer surface of a ceramic bowl with a brown strap and upper dot pattern.
+
+shader OuterBowlShader(
+    // Input parameters: colors, strap height, dot properties
+    color upper_color = color(0.82, 0.81, 0.80),
+    color lower_color = color(0.34, 0.23, 0.15),
+    color dot_color   = color(0.05, 0.05, 0.05),
+    float strap_top = -0.35,
+    float dot_start = -0.35,
+    float dot_base_radius = 0.003,
+    float dot_radius_variation = 0.25,
+    float dot_density = 400.0,
+    output color Cout = 0
+)
+{
+    // Transform point to object space
+    point pos = transform("object", P);
+    float z = pos[2];
+    float s = mod(pos[0], 1.0);
+    float t = mod(pos[2], 1.0);
+
+    // Set base color based on vertical position
+    color base_color = (z <= strap_top) ? lower_color : upper_color;
+    color result = base_color;
+
+    // Add dots only in the upper region
+    if (z > dot_start && base_color == upper_color) {
+        int numDots = int(dot_density);
+        for (int i = 0; i < numDots; i++) {
+            // Generate random dot positions and sizes
+            float sDot = mod(sin(i * 12.9898) * 43758.5453, 1.0);
+            float tDot = mod(sin(i * 78.233) * 12345.6789, 1.0);
+            float r = dot_base_radius * (1.0 + dot_radius_variation * mod(sin(i * 91.7), 1.0));
+
+            // Compute distance from current point to dot center
+            float dx = s - sDot;
+            float dy = t - tDot;
+            if (dx > 0.5) dx -= 1.0;
+            if (dx < -0.5) dx += 1.0;
+            if (dy > 0.5) dy -= 1.0;
+            if (dy < -0.5) dy += 1.0;
+
+            float dist2 = dx * dx + dy * dy;
+            if (dist2 < r * r) {
+                result = dot_color;
+                break;
+            }
+        }
+    }
+
+    Cout = result;
+}

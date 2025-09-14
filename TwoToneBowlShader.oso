@@ -1,0 +1,205 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
+# options: 
+shader TwoToneBowlShader
+param	color	upper_color	0.819999993 0.810000002 0.800000012		%read{18,20} %write{2147483647,-1}
+param	color	lower_color	0.819999993 0.810000002 0.800000012		%read{17,17} %write{2147483647,-1}
+param	color	dot_color	0.0500000007 0.0500000007 0.0500000007		%read{64,64} %write{2147483647,-1}
+param	float	split_height	0		%read{15,15} %write{2147483647,-1}
+param	float	dot_base_radius	0.00350000011		%read{55,55} %write{2147483647,-1}
+param	float	dot_radius_variation	0.25		%read{53,53} %write{2147483647,-1}
+param	float	dot_density	400		%read{22,22} %write{2147483647,-1}
+oparam	color	Cout	0 0 0		%read{2147483647,-1} %write{68,68}
+global	point	P	%read{1,1} %write{2147483647,-1}
+local	point	pos	%read{2,9} %write{1,1}
+local	float	y	%read{15,15} %write{2,2}
+local	float	s	%read{25,67} %write{8,8}
+local	float	t	%read{25,67} %write{14,14}
+local	color	base_color	%read{19,20} %write{17,18}
+local	color	result	%read{68,68} %write{19,67}
+local	int	___345_numDots	%read{25,67} %write{22,22}
+local	int	___346_i	%read{25,67} %write{24,67}
+local	float	___347_sDot	%read{25,67} %write{25,67}
+local	float	___347_tDot	%read{25,67} %write{25,67}
+local	float	___347_r	%read{25,67} %write{25,67}
+local	float	___347_dx	%read{25,67} %write{25,67}
+local	float	___347_dy	%read{25,67} %write{25,67}
+local	float	___347_dist	%read{25,67} %write{25,67}
+const	string	$const1	"object"		%read{1,1} %write{2147483647,-1}
+const	string	$const2	"transform"		%read{0,0} %write{2147483647,-1}
+const	string	$const3	"common"		%read{1,1} %write{2147483647,-1}
+const	int	$const4	1		%read{2,67} %write{2147483647,-1}
+const	int	$const5	0		%read{3,26} %write{2147483647,-1}
+temp	float	$tmp1	%read{5,8} %write{3,3}
+const	float	$const6	1		%read{5,54} %write{2147483647,-1}
+const	string	$const7	"mod"		%read{4,48} %write{2147483647,-1}
+temp	float	$tmp2	%read{7,7} %write{6,6}
+temp	float	$tmp3	%read{6,6} %write{5,5}
+temp	float	$tmp4	%read{8,8} %write{7,7}
+const	int	$const8	2		%read{9,9} %write{2147483647,-1}
+temp	float	$tmp5	%read{11,14} %write{9,9}
+temp	float	$tmp6	%read{13,13} %write{12,12}
+temp	float	$tmp7	%read{12,12} %write{11,11}
+temp	float	$tmp8	%read{14,14} %write{13,13}
+temp	int	$tmp9	%read{16,16} %write{15,15}
+temp	int	$tmp10	%read{21,21} %write{20,20}
+temp	int	$tmp11	%read{25,67} %write{25,67}
+temp	int	$tmp12	%read{23,67} %write{24,67}
+temp	float	$tmp13	%read{25,67} %write{25,67}
+const	float	$const9	12.9898005		%read{28,28} %write{2147483647,-1}
+temp	float	$tmp14	%read{25,67} %write{25,67}
+temp	float	$tmp15	%read{25,67} %write{25,67}
+const	float	$const10	43758.5469		%read{30,30} %write{2147483647,-1}
+temp	float	$tmp16	%read{25,67} %write{25,67}
+temp	float	$tmp17	%read{25,67} %write{25,67}
+temp	float	$tmp18	%read{25,67} %write{25,67}
+temp	float	$tmp19	%read{25,67} %write{25,67}
+temp	float	$tmp20	%read{25,67} %write{25,67}
+const	float	$const11	78.2330017		%read{37,37} %write{2147483647,-1}
+temp	float	$tmp21	%read{25,67} %write{25,67}
+temp	float	$tmp22	%read{25,67} %write{25,67}
+const	float	$const12	12345.6787		%read{39,39} %write{2147483647,-1}
+temp	float	$tmp23	%read{25,67} %write{25,67}
+temp	float	$tmp24	%read{25,67} %write{25,67}
+temp	float	$tmp25	%read{25,67} %write{25,67}
+temp	float	$tmp26	%read{25,67} %write{25,67}
+temp	float	$tmp27	%read{25,67} %write{25,67}
+temp	float	$tmp28	%read{25,67} %write{25,67}
+const	float	$const13	91.6999969		%read{46,46} %write{2147483647,-1}
+temp	float	$tmp29	%read{25,67} %write{25,67}
+temp	float	$tmp30	%read{25,67} %write{25,67}
+temp	float	$tmp31	%read{25,67} %write{25,67}
+temp	float	$tmp32	%read{25,67} %write{25,67}
+temp	float	$tmp33	%read{25,67} %write{25,67}
+temp	float	$tmp34	%read{25,67} %write{25,67}
+temp	float	$tmp35	%read{25,67} %write{25,67}
+temp	float	$tmp36	%read{25,67} %write{25,67}
+temp	float	$tmp37	%read{25,67} %write{25,67}
+temp	float	$tmp38	%read{25,67} %write{25,67}
+temp	int	$tmp39	%read{25,67} %write{25,67}
+temp	int	$tmp40	%read{2147483647,-1} %write{25,67}
+code ___main___
+# TwoToneBowlShader.osl:16
+#     point pos = transform("object", P);
+	functioncall	$const2 2 	%filename{"TwoToneBowlShader.osl"} %line{16} %argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:263
+# point  transform (string to, point p)  { return transform("common",to,p); }
+	transform	pos $const3 $const1 P 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{263} %argrw{"wrrr"}
+# TwoToneBowlShader.osl:17
+#     float y = pos[1];
+	compref		y pos $const4 	%filename{"TwoToneBowlShader.osl"} %line{17} %argrw{"wrr"}
+# TwoToneBowlShader.osl:18
+#     float s = mod(pos[0], 1.0);
+	compref		$tmp1 pos $const5 	%line{18} %argrw{"wrr"}
+	functioncall	$const7 9 	%argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp3 $tmp1 $const6 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp2 $tmp3 	%argrw{"wr"}
+	mul		$tmp4 $const6 $tmp2 	%argrw{"wrr"}
+	sub		s $tmp1 $tmp4 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:19
+#     float t = mod(pos[2], 1.0);
+	compref		$tmp5 pos $const8 	%filename{"TwoToneBowlShader.osl"} %line{19} %argrw{"wrr"}
+	functioncall	$const7 15 	%argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp7 $tmp5 $const6 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp6 $tmp7 	%argrw{"wr"}
+	mul		$tmp8 $const6 $tmp6 	%argrw{"wrr"}
+	sub		t $tmp5 $tmp8 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:22
+#     color base_color = (y < split_height) ? lower_color : upper_color;
+	lt		$tmp9 y split_height 	%filename{"TwoToneBowlShader.osl"} %line{22} %argrw{"wrr"}
+	if		$tmp9 18 19 	%argrw{"r"}
+	assign		base_color lower_color 	%argrw{"wr"}
+	assign		base_color upper_color 	%argrw{"wr"}
+# TwoToneBowlShader.osl:23
+#     color result = base_color;
+	assign		result base_color 	%line{23} %argrw{"wr"}
+# TwoToneBowlShader.osl:25
+#     if (base_color == upper_color) {
+	eq		$tmp10 base_color upper_color 	%line{25} %argrw{"wrr"}
+	if		$tmp10 68 68 	%argrw{"r"}
+# TwoToneBowlShader.osl:26
+#         int numDots = int(dot_density);
+	assign		___345_numDots dot_density 	%line{26} %argrw{"wr"}
+# TwoToneBowlShader.osl:27
+#         for (int i = 0; i < numDots; i++) {
+	for		$tmp12 25 27 66 68 	%line{27} %argrw{"r"}
+	assign		___346_i $const5 	%argrw{"wr"}
+	lt		$tmp11 ___346_i ___345_numDots 	%argrw{"wrr"}
+	neq		$tmp12 $tmp11 $const5 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:29
+#             float sDot = mod(sin(i * 12.9898) * 43758.5453, 1.0);
+	assign		$tmp15 ___346_i 	%line{29} %argrw{"wr"}
+	mul		$tmp14 $tmp15 $const9 	%argrw{"wrr"}
+	sin		$tmp13 $tmp14 	%argrw{"wr"}
+	mul		$tmp16 $tmp13 $const10 	%argrw{"wrr"}
+	functioncall	$const7 36 	%argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp18 $tmp16 $const6 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp17 $tmp18 	%argrw{"wr"}
+	mul		$tmp19 $const6 $tmp17 	%argrw{"wrr"}
+	sub		___347_sDot $tmp16 $tmp19 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:30
+#             float tDot = mod(sin(i * 78.233) * 12345.6789, 1.0);
+	assign		$tmp22 ___346_i 	%filename{"TwoToneBowlShader.osl"} %line{30} %argrw{"wr"}
+	mul		$tmp21 $tmp22 $const11 	%argrw{"wrr"}
+	sin		$tmp20 $tmp21 	%argrw{"wr"}
+	mul		$tmp23 $tmp20 $const12 	%argrw{"wrr"}
+	functioncall	$const7 45 	%argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp25 $tmp23 $const6 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp24 $tmp25 	%argrw{"wr"}
+	mul		$tmp26 $const6 $tmp24 	%argrw{"wrr"}
+	sub		___347_tDot $tmp23 $tmp26 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:31
+#             float r = dot_base_radius * (1.0 + dot_radius_variation * mod(sin(i * 91.7), 1.0));
+	assign		$tmp30 ___346_i 	%filename{"TwoToneBowlShader.osl"} %line{31} %argrw{"wr"}
+	mul		$tmp29 $tmp30 $const13 	%argrw{"wrr"}
+	sin		$tmp28 $tmp29 	%argrw{"wr"}
+	functioncall	$const7 53 	%argrw{"r"}
+# C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h:132
+# float  mod (float  a, float  b) { return a - b*floor(a/b); }
+	div		$tmp32 $tmp28 $const6 	%filename{"C:\\\\Program Files\\\\Pixar\\\\RenderManProServer-26.3\\\\lib\\\\osl\\\\include\\\\stdosl.h"} %line{132} %argrw{"wrr"}
+	floor		$tmp31 $tmp32 	%argrw{"wr"}
+	mul		$tmp33 $const6 $tmp31 	%argrw{"wrr"}
+	sub		$tmp27 $tmp28 $tmp33 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:31
+#             float r = dot_base_radius * (1.0 + dot_radius_variation * mod(sin(i * 91.7), 1.0));
+	mul		$tmp34 dot_radius_variation $tmp27 	%filename{"TwoToneBowlShader.osl"} %line{31} %argrw{"wrr"}
+	add		$tmp35 $const6 $tmp34 	%argrw{"wrr"}
+	mul		___347_r dot_base_radius $tmp35 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:34
+#             float dx = s - sDot;
+	sub		___347_dx s ___347_sDot 	%line{34} %argrw{"wrr"}
+# TwoToneBowlShader.osl:35
+#             float dy = t - tDot;
+	sub		___347_dy t ___347_tDot 	%line{35} %argrw{"wrr"}
+# TwoToneBowlShader.osl:36
+#             float dist = sqrt(dx*dx + dy*dy);
+	mul		$tmp36 ___347_dx ___347_dx 	%line{36} %argrw{"wrr"}
+	mul		$tmp37 ___347_dy ___347_dy 	%argrw{"wrr"}
+	add		$tmp38 $tmp36 $tmp37 	%argrw{"wrr"}
+	sqrt		___347_dist $tmp38 	%argrw{"wr"}
+# TwoToneBowlShader.osl:37
+#             if (dist < r) {
+	lt		$tmp39 ___347_dist ___347_r 	%line{37} %argrw{"wrr"}
+	if		$tmp39 66 66 	%argrw{"r"}
+# TwoToneBowlShader.osl:38
+#                 result = dot_color;
+	assign		result dot_color 	%line{38} %argrw{"wr"}
+# TwoToneBowlShader.osl:39
+#                 break;
+	break	%line{39}
+# TwoToneBowlShader.osl:27
+#         for (int i = 0; i < numDots; i++) {
+	assign		$tmp40 ___346_i 	%line{27} %argrw{"wr"}
+	add		___346_i ___346_i $const4 	%argrw{"wrr"}
+# TwoToneBowlShader.osl:44
+#     Cout = result;
+	assign		Cout result 	%line{44} %argrw{"wr"}
+	end
